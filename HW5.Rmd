@@ -1,0 +1,65 @@
+---
+title: "SDS HW 5"
+author: "Seraphym Ignacio"
+date: "2024-10-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r echo = FALSE}
+# setup
+library(tidyverse)
+library(rvest)
+library(dplyr)
+library(ggplot2)
+ball <- read.csv("2024 WNBA Season - Sheet1.csv")
+```
+
+## Homework 5
+
+1.  There are 183 players.
+
+```{r}
+# count amount of players
+ball |>
+  select("Player", "MP", "X3P.")
+
+# new dataset
+stats <- ball[c("Player", "MP", "X3P.")]
+```
+
+2.  The graph shows a fairly normal distribution, and mostly unimodal. There is a median value of 31.55%. There are some outliers such as one at 100% and many at 0%. Most of the distribution is between 15%-50%.
+
+```{r}
+#graph of distibution 
+
+ggplot(stats, aes(x = `X3P.`)) + 
+  geom_histogram(fill = "lightblue", color = "darkgray") +
+  labs(title = "Three-Point Percentage Distribution",
+       x = "Three-Point Percentage",
+       y = "Frequency") +
+  theme_minimal()
+
+#distribution
+fivenum(stats$X3P.)
+```
+
+3.  Below is a graph highlighting Shakira Austin's stats.
+
+```{r}
+
+highlight_player <- "Shakira Austin"
+ggplot(stats, aes(x = MP, y = `X3P.`)) +
+  geom_point(color = "grey", alpha = 0.6) +  # Grey points for all players
+  geom_point(data = subset(stats, Player == highlight_player), 
+             color = "red", size = 3) +  # Highlighted player in red
+  geom_text(data = subset(stats, Player == highlight_player), 
+            aes(label = Player),  color = "black") + 
+  labs(title = "Minutes Played and Three-Point Percentage",
+       x = "Minutes Played",
+       y = "Three-Point Percentage") +
+  theme_minimal()
+```
